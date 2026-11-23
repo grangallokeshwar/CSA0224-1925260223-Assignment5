@@ -1,0 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+static int valid_group(const char *g){const char *a[]={"O+","O-","A+","A-","B+","B-","AB+","AB-"};for(int i=0;i<8;i++)if(strcmp(g,a[i])==0)return 1;return 0;}
+int main(int argc,char **argv){if(argc<2||argc>4){fprintf(stderr,"Usage: %s find GROUP | issue GROUP UNITS | read FILE\n",argv[0]);return 2;}if(strcmp(argv[1],"find")==0){if(argc!=3||!valid_group(argv[2])){fprintf(stderr,"Invalid blood group/arguments\n");return 2;}printf("find: %s\n",argv[2]);return 0;}if(strcmp(argv[1],"issue")==0){char *end=NULL;if(argc!=4||!valid_group(argv[2])){fprintf(stderr,"Invalid arguments\n");return 2;}long n=strtol(argv[3],&end,10);if(*end||n<=0){fprintf(stderr,"Invalid units\n");return 2;}printf("issue: %s %ld\n",argv[2],n);return 0;}if(strcmp(argv[1],"read")==0){FILE *f=fopen(argv[2],"r");if(!f){perror(argv[2]);return 1;}fclose(f);puts("file opened");return 0;}fprintf(stderr,"Unknown command\n");return 2;}
