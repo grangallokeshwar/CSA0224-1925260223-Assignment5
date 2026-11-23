@@ -1,0 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+typedef struct {int id;char group[4];} Donor;
+typedef struct {Donor *data;size_t size,capacity;} DonorList;
+int add_donor(DonorList *l,int id,const char *g){if(!l||!g)return 0;if(l->size==l->capacity){size_t cap=l->capacity?l->capacity*2:2;Donor *p=realloc(l->data,cap*sizeof *p);if(!p)return 0;l->data=p;l->capacity=cap;}l->data[l->size].id=id;strncpy(l->data[l->size].group,g,3);l->data[l->size].group[3]='\0';l->size++;return 1;}
+int main(void){DonorList l={NULL,0,0};const char *g[]={"O+","A+","B-","AB+","O-"};clock_t s=clock();for(int i=0;i<5;i++){if(!add_donor(&l,7001+i,g[i])){perror("realloc");free(l.data);return 1;}printf("added %d (%s): size = %zu, capacity = %zu\n",l.data[i].id,l.data[i].group,l.size,l.capacity);}printf("payload memory = %zu bytes\n",l.capacity*sizeof *l.data);printf("elapsed CPU time = %.6f s\n",(double)(clock()-s)/CLOCKS_PER_SEC);free(l.data);l.data=NULL;l.size=l.capacity=0;puts("memory released");return 0;}
